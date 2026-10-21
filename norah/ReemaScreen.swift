@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct ContentView: View {
+struct ContentView2: View {
     var body: some View {
         
         
@@ -19,11 +19,11 @@ struct ContentView: View {
             VStack{
                 
                 
-                Image(._1041316745139677463)
+                Image(._841117667939903581)
                     .resizable()
-                    .frame(width: 120,height: 120)
+                    .frame(width: 150,height: 150)
                 
-                Text("Norah,\(25)")
+                Text("Reema,\(24)")
                     .font(.title2)
                     .fontWeight(.bold)
                 
@@ -33,7 +33,7 @@ struct ContentView: View {
                 Section{
                     
                     
-                    Text("I'm interested in maekiting and coding ,I enjoy collecting books,exploring new ideas and greaning new skills")
+                    Text("Im an artist and a tech person, i love painting and exploring new concepts of art, also new tech trends")
                 }
             header:{ Text("About")
                 
