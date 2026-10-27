@@ -11,6 +11,8 @@ struct ContentView: View {
     @State private var isEditing: Bool = false
     @State private var draftBio: String = ""
     
+    @State private var skills: [String] = ["Marketing", "Swift", "Reading"]
+    
     func validateBio(_ bio: String) -> String {
         let cleaned = bio.trimmingCharacters(in: .whitespacesAndNewlines)
         if cleaned.isEmpty {
@@ -20,48 +22,96 @@ struct ContentView: View {
     }
     
     var body: some View {
-        List {
-            
-            VStack {
-                Text("\(name), \(age)")
-                    .font(.title2)
-                    .fontWeight(.bold)
+        NavigationStack {
+            List {
                 
-                if isAvailable {
-                    Image(._1041316745139677463)
-                        .resizable()
-                        .frame(width: 120, height: 120)
-                    Text("available")
-                } else {
-                    Image(systemName: "circle")
-                    Text("unavailable")
-                }
-            }
-            
-            Section(header: Text("About")) {
-                if isEditing {
-                    TextField("Write your bio", text: $draftBio, axis: .vertical)
+                VStack {
+                    Text("\(name), \(age)")
+                        .font(.title2)
+                        .fontWeight(.bold)
                     
-                    Button("Save") {
-                        bio = validateBio(draftBio)
-                        isEditing = false
-                    }
-                } else {
-                    Text(bio)
-                    
-                    Button("Edit Bio") {
-                        draftBio = bio == "no bio" ? "" : bio
-                        isEditing = true
+                    if isAvailable {
+                        Image(._1041316745139677463)
+                            .resizable()
+                            .frame(width: 120, height: 120)
+                        Text("available")
+                    } else {
+                        Image(systemName: "circle")
+                        Text("unavailable")
                     }
                 }
+                
+                Section(header: Text("About")) {
+                    if isEditing {
+                        TextField("Write your bio", text: $draftBio, axis: .vertical)
+                        
+                        Button("Save") {
+                            bio = validateBio(draftBio)
+                            isEditing = false
+                        }
+                        .buttonStyle(.borderless)
+                    } else {
+                        Text(bio)
+                        
+                        Button("Edit Bio") {
+                            draftBio = bio == "no bio" ? "" : bio
+                            isEditing = true
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
+                
+                Section {
+                    NavigationLink("Skills") {
+                        SkillsView(skills: $skills)
+                    }
+                }
             }
-        }
-        .onAppear {
-            bio = validateBio(rawBio)
+            .navigationTitle("Profile")
+            .onAppear {
+                bio = validateBio(rawBio)
+            }
         }
     }
 }
 
-#Preview {
-    ContentView()
+// الصفحة الثانية: كل المهارات + إضافة
+struct SkillsView: View {
+    
+    @Binding var skills: [String]
+    @State private var newSkill: String = ""
+    
+    func addSkill() {
+        let cleaned = newSkill.trimmingCharacters(in: .whitespacesAndNewlines)
+        if cleaned.isEmpty || skills.contains(cleaned) {
+            return
+        }
+        skills.append(cleaned)
+        newSkill = ""
+    }
+    
+    var body: some View {
+        List {
+            Section(header: Text("Add a skill")) {
+                HStack {
+                    TextField("Enter a skill", text: $newSkill)
+                    
+                    Button("Add") {
+                        addSkill()
+                    }
+                    .buttonStyle(.borderless)
+                }
+            }
+            
+            Section(header: Text("All Skills")) {
+                ForEach(skills, id: \.self) { skill in
+                    Text(skill)
+                }
+                .onDelete { offsets in
+                    skills.remove(atOffsets: offsets)
+                }
+            }
+        }
+        .navigationTitle("Skills")
+    }
 }
